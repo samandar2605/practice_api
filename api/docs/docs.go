@@ -52,7 +52,8 @@ const docTemplate = `{
                     {
                         "enum": [
                             "asc",
-                            "desc"
+                            "desc",
+                            "none"
                         ],
                         "type": "string",
                         "name": "sort_by_date",
@@ -62,7 +63,8 @@ const docTemplate = `{
                     {
                         "enum": [
                             "asc",
-                            "desc"
+                            "desc",
+                            "none"
                         ],
                         "type": "string",
                         "name": "sort_by_name",

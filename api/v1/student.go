@@ -113,12 +113,12 @@ func studentsParams(c *gin.Context) (*models.GetAllParams, error) {
 	}
 
 	if c.Query("sort_by_date") != "" &&
-		(c.Query("sort_by_date") == "desc" || c.Query("sort_by_date") == "asc") {
+		(c.Query("sort_by_date") == "desc" || c.Query("sort_by_date") == "asc" || c.Query("sort_by_date") == "none") {
 		sortByDate = c.Query("sort_by_date")
 	}
 
 	if c.Query("sort_by_name") != "" &&
-		(c.Query("sort_by_name") == "asc" || c.Query("sort_by_name") == "desc") {
+		(c.Query("sort_by_name") == "asc" || c.Query("sort_by_name") == "desc" || c.Query("sort_by_name") == "none"){
 		SortByName = c.Query("sort_by_name")
 	}
 

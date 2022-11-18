@@ -15,7 +15,7 @@ func NewStudent(db *sqlx.DB) repo.StudentStorageI {
 	return &studentRepo{db: db}
 }
 
-func (sr *studentRepo) Create(students []*repo.Student) (error) {
+func (sr *studentRepo) Create(students []*repo.Student) error {
 	query := `
 		INSERT INTO students(
 			first_name,
@@ -25,13 +25,13 @@ func (sr *studentRepo) Create(students []*repo.Student) (error) {
 			phone_number
 		)values($1,$2,$3,$4,$5)
 	`
-	tx,err:=sr.db.Begin()
-	if err!=nil{
+	tx, err := sr.db.Begin()
+	if err != nil {
 		return err
 	}
 
-	for _,s:=range students{
-		_,err = tx.Exec(
+	for _, s := range students {
+		_, err = tx.Exec(
 			query,
 			s.FirstName,
 			s.LastName,
@@ -39,7 +39,7 @@ func (sr *studentRepo) Create(students []*repo.Student) (error) {
 			s.Email,
 			s.PhoneNumber,
 		)
-		if err!=nil{
+		if err != nil {
 			tx.Rollback()
 			return err
 		}
@@ -47,7 +47,6 @@ func (sr *studentRepo) Create(students []*repo.Student) (error) {
 	tx.Commit()
 	return nil
 }
-
 
 func (sr *studentRepo) GetAll(param repo.GetStudentsQuery) (*repo.GetAllStudentsResult, error) {
 	result := repo.GetAllStudentsResult{
@@ -64,7 +63,7 @@ func (sr *studentRepo) GetAll(param repo.GetStudentsQuery) (*repo.GetAllStudents
 			where first_name ILIKE '%s' OR last_name ILIKE '%s' OR email ILIKE '%s' 
 		OR username ILIKE '%s' OR phone_number ILIKE '%s'`, str, str, str, str, str)
 	}
-	
+
 	query := `
 		SELECT 
 			id,
@@ -75,11 +74,29 @@ func (sr *studentRepo) GetAll(param repo.GetStudentsQuery) (*repo.GetAllStudents
 			phone_number,
 			created_at
 		FROM students
-		` + filter + `
-		ORDER BY created_at `+param.SortByDate+`, 
-		first_name `+param.SortByName+` 
-		` + limit
+		` + filter
 
+	if param.SortByDate != "none" || param.SortByName != "none" {
+		queryDate := " "
+		queryName := " "
+		if param.SortByDate != "none" {
+			queryDate = " created_at " + param.SortByDate
+		}
+		if param.SortByName != "none" {
+			queryName = " first_name " + param.SortByName
+		}
+		if param.SortByDate != "none" && param.SortByName != "none" {
+			query += " order by " + queryDate + " , " + queryName
+		} else {
+			if param.SortByDate != "none" {
+				query += " order by " + queryDate
+			} else {
+				query += " order by " + queryName
+			}
+		}
+	}
+
+	query += limit
 	rows, err := sr.db.Query(query)
 	if err != nil {
 		return nil, err

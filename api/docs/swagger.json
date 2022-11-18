@@ -45,7 +45,8 @@
                     {
                         "enum": [
                             "asc",
-                            "desc"
+                            "desc",
+                            "none"
                         ],
                         "type": "string",
                         "name": "sort_by_date",
@@ -55,7 +56,8 @@
                     {
                         "enum": [
                             "asc",
-                            "desc"
+                            "desc",
+                            "none"
                         ],
                         "type": "string",
                         "name": "sort_by_name",
